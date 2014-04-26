@@ -26,8 +26,12 @@
       },
       "runtime" : {
          "requires" : {
-            "Carp" : "0",
-            "perl" : "5.008001"
+            "Exporter" : "0",
+            "parent" : "0",
+            "perl" : "5.008001",
+            "strict" : "0",
+            "utf8" : "0",
+            "warnings" : "0"
          }
       }
    },

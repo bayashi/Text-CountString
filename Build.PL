@@ -15,8 +15,12 @@ my $builder = Module::Build->new(
         'Test::More' => 0.88,
     },
     requires => {
-        'perl' => '5.008001',
-        'Carp' => 0,
+        'perl'     => '5.008001',
+        'strict'   => 0,
+        'warnings' => 0,
+        'utf8'     => 0,
+        'parent'   => 0,
+        'Exporter' => 0,
     },
     add_to_cleanup      => [ 'Text-CountString-*' ],
     meta_merge     => {
