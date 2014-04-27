@@ -4,8 +4,6 @@ use warnings;
 
 use Benchmark qw/timethese cmpthese/;
 
-use Text::CountString;
-
 my $c = 'c' x 10;
 my $d = 'd' x 10;
 
