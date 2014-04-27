@@ -2,12 +2,35 @@ package Text::CountString;
 use strict;
 use warnings;
 use utf8;
-use parent 'Exporter';
-our @EXPORT = qw/
-    count_string
-/;
 
 our $VERSION = '0.01';
+
+my $COUNTER;
+
+sub import {
+    my ($class, $implement) = @_;
+
+    $COUNTER = ($implement && $implement eq 'split')
+             ? \&_split_implement
+             : \&_regexp_implement;
+
+    my $caller = caller;
+    no strict 'refs'; ## no critic
+    *{"${caller}::count_string"} = \&count_string;
+}
+
+sub _regexp_implement {
+    return 0 if !defined($_[0]) || $_[0] eq '';
+    return 0 if !defined($_[1]) || $_[1] eq '';
+    return () = ($_[0] =~ /\Q$_[1]\E/g);
+}
+
+sub _split_implement {
+    return 0 if !defined($_[0]) || $_[0] eq '';
+    return 0 if !defined($_[1]) || $_[1] eq '';
+    my @list = split /\Q$_[1]\E/, $_[0], -1;
+    return scalar(@list) - 1;
+}
 
 sub count_string {
     my $target_text = shift;
@@ -15,20 +38,14 @@ sub count_string {
     my $result;
 
     if (@_ == 1) {
-        $result = _count_string($target_text, $_[0]);
+        $result = $COUNTER->($target_text, $_[0]);
     }
     else {
         for my $string (@_) {
-            $result->{$string} = _count_string($target_text, $string);
+            $result->{$string} = $COUNTER->($target_text, $string);
         }
     }
     return $result;
-}
-
-sub _count_string {
-    return 0 if !defined($_[0]) || $_[0] eq '';
-    return 0 if !defined($_[1]) || $_[1] eq '';
-    return () = ($_[0] =~ /\Q$_[1]\E/g);
 }
 
 1;
@@ -71,6 +88,20 @@ Also you can get counts of bulk strings
     warn $result->{o}; # 4
     warn $result->{e}; # 4
     warn $result->{h}; # 2
+
+
+=head1 CHANGE IMPLEMENTS
+
+This module can switch implements for counting string.
+
+By default, to count strings is invoked by the regexp implement. Generally, It's fast enough.
+
+    use Text::CountString
+
+However, if you can guess that there are many many matched strings, then the 'C<split> implement' is faster than regexp implement.
+So the internal implement can be switched 'regexp' to 'split' like below.
+
+    use Text::CountString qw/split/;
 
 
 =head1 REPOSITORY

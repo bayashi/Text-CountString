@@ -19,8 +19,6 @@ my $builder = Module::Build->new(
         'strict'   => 0,
         'warnings' => 0,
         'utf8'     => 0,
-        'parent'   => 0,
-        'Exporter' => 0,
     },
     add_to_cleanup      => [ 'Text-CountString-*' ],
     meta_merge     => {

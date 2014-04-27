@@ -3,7 +3,7 @@ use warnings;
 use utf8;
 use Test::More;
 
-use Text::CountString;
+use Text::CountString qw/split/;
 
 
 {
